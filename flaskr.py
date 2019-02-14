@@ -9,5 +9,9 @@ def hello_world(name):
 def hello_world_template():
   return render_template('hello.html')
 
+@app.route('/hello/pull')
+def hello_world_pull():
+  return 'pull'
+
 if __name__ == '__main__':
   app.run(port='80')
