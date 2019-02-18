@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-<script type="text/javascript" src="/resources/jquery.tmpl.min.js"></script>
-<script type="text/javascript" src="/resources/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/jquery.tmpl.min.js"></script>
 
 <table>
   <tr>
@@ -10,15 +10,41 @@
     <th>coefficient</th>
     <th>result</th>
   </tr>
+  <tbody id="products"></tbody>
+</table>
+
+<script>
+
+  let productData = [{'id':1}, {'id':2}, {'id':3}, {'id':4}, {'id':5}];
+
+  $( document ).ready(function() {
+    $("#productsTmpl").tmpl(productData).appendTo("#products");
+    $(".changeable").on("change paste keyup", function() {
+      onChangeInput();
+    });
+  });
+
+  function onChangeInput() {
+
+    console.log(productData);
+
+    for (let idx=0; idx < productData.length; idx++) {
+      let result = $("#price_" + idx).val() / $("#amount_"  + idx).val() * $("#coefficient_"  + idx).val();
+      $("#result_"  + idx).val(result);
+    }
+  }
+</script>
+
+<script id="productsTmpl" type="text/x-jquery-tmpl">
   <tr>
     <td>
-      <input id="price_1" class="changeable" type="number" style="width: 50px; font-size: 20px">
+      <input id="price_${id}" class="changeable" type="number" style="width: 50px; font-size: 20px">
     </td>
     <td>
-      <input id="amount_1" class="changeable" type="number" style="width: 50px; font-size: 20px">
+      <input id="amount_${id}" class="changeable" type="number" style="width: 50px; font-size: 20px">
     </td>
     <td>
-      <select id="coefficient_1" class="changeable" style="font-size: 20px">
+      <select id="coefficient_${id}" class="changeable" style="font-size: 20px">
         <option value="0.8">80%</option>
         <option value="0.9">90%</option>
         <option value="1.0" selected>100%</option>
@@ -27,18 +53,7 @@
       </select>
     </td>
     <td>
-      <input id="result_1" type="number" style="width: 50px; font-size: 20px" readonly>
+      <input id="result_${id}" type="number" style="width: 50px; font-size: 20px" readonly>
     </td>
   </tr>
-</table>
-
-<script>
-  $(".changeable").on("change paste keyup", function() {
-    onChangeInput();
-  });
-
-  function onChangeInput() {
-    let result = $("#price_1").val() / $("#amount_1").val() * $("#coefficient_1").val();
-    $("#result_1").val(result);
-  }
 </script>
