@@ -1,1 +1,46 @@
-hello html
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"
+        integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+        crossorigin="anonymous">
+</script>
+
+<table>
+  <tr>
+    <th>price</th>
+    <th>amount</th>
+    <th>coefficient</th>
+    <th>result</th>
+  </tr>
+  <tr>
+    <td>
+      <input id="price_1" class="changeable" type="number" style="width: 50px; font-size: 20px">
+    </td>
+    <td>
+      <input id="amount_1" class="changeable" type="number" style="width: 50px; font-size: 20px">
+    </td>
+    <td>
+      <select id="coefficient_1" class="changeable" style="font-size: 20px">
+        <option value="0.8">80%</option>
+        <option value="0.9">90%</option>
+        <option value="1.0">100%</option>
+        <option value="1.1">110%</option>
+        <option value="1.2">120%</option>
+      </select>
+    </td>
+    <td>
+      <input id="result_1" type="number" style="width: 50px; font-size: 20px" readonly>
+    </td>
+  </tr>
+</table>
+
+<script>
+  $(".changeable").on("change paste keyup", function() {
+    onChangeInput();
+  });
+
+  function onChangeInput() {
+    let result = $("#price_1").val() / $("#amount_1").val() * $("#coefficient_1").val();
+    $("#result_1").val(result);
+  }
+</script>
