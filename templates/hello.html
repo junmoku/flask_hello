@@ -11,6 +11,7 @@
 <div style="width: 100%">
   <input id="chat_input" type="text">
   <button onclick="onChatSend()">send</button>
+  <button onclick="initChat()">init</button>
 </div>
 
 
@@ -36,6 +37,7 @@
     $(".changeable").on("change paste keyup", function() {
       onChangeInput();
     });
+    getChat();
   });
 
   function onChangeInput() {
@@ -49,11 +51,20 @@
     let param = {
       'content': $("#chat_input").val() + "<br/>"
     }
-
-    console.log(param);
-
-    $.post("/chat", param, function(data, status) {
+    $.post("/chat", param, function(data) {
       $("#chat_content").html(decodeURIComponent(data));
+    });
+  }
+
+  function getChat() {
+    $.get("/chat", null, function(data) {
+      $("#chat_content").html(decodeURIComponent(data));
+    });
+  }
+
+  function initChat() {
+    $.post("/chat/init", null, function() {
+      $("#chat_content").html('');
     });
   }
 

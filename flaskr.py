@@ -11,6 +11,9 @@ class chat():
   def getContent(self):
     return self.chatContent
 
+  def initContent(self):
+    self.chatContent = ""
+
 c = chat()
 
 @app.route('/hello/<name>')
@@ -25,11 +28,20 @@ def hello_world_template():
 def hello_world_pull():
   return 'pull'
 
+@app.route('/chat', methods=['GET'])
+def getChat():
+  return c.getContent()
+
 @app.route('/chat', methods=['POST'])
-def chat():
+def addChat():
   c.addContent(request.get_data().decode('UTF-8'))
   return c.getContent()
 
+@app.route('/chat/init', methods=['POST'])
+def initChat():
+  c.initContent()
+  return 'ok'
+
 if __name__ == '__main__':
-  # app.run(port='5000', debug='true')
-  app.run(host='0.0.0.0', port='5000', debug='true')
+  app.run(port='5000', debug='true')
+  # app.run(host='0.0.0.0', port='5000', debug='true')
