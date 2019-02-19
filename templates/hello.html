@@ -3,6 +3,17 @@
 <script type="text/javascript" src="/static/jquery-1.12.4.min.js"></script>
 <script type="text/javascript" src="/static/jquery.tmpl.min.js"></script>
 
+
+<span> smart sunhan </span>
+</br>
+<span id="chat_content"></span>
+
+<div style="width: 100%">
+  <input id="chat_input" type="text">
+  <button onclick="onChatSend()">send</button>
+</div>
+
+
 <table>
   <tr>
     <th>price</th>
@@ -13,9 +24,12 @@
   <tbody id="products"></tbody>
 </table>
 
+</body>
+
 <script>
 
   let productData = [{'id':1}, {'id':2}, {'id':3}, {'id':4}, {'id':5}];
+  let chatContent = "";
 
   $( document ).ready(function() {
     $("#productsTmpl").tmpl(productData).appendTo("#products");
@@ -25,14 +39,24 @@
   });
 
   function onChangeInput() {
-
-    console.log(productData);
-
     for (let idx=0; idx < productData.length; idx++) {
       let result = $("#price_" + idx).val() / $("#amount_"  + idx).val() * $("#coefficient_"  + idx).val();
       $("#result_"  + idx).val(result);
     }
   }
+
+  function onChatSend() {
+    let param = {
+      'content': $("#chat_input").val() + "<br/>"
+    }
+
+    console.log(param);
+
+    $.post("/chat", param, function(data, status) {
+      $("#chat_content").html(decodeURIComponent(data));
+    });
+  }
+
 </script>
 
 <script id="productsTmpl" type="text/x-jquery-tmpl">
