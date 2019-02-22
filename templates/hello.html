@@ -6,89 +6,37 @@
 
 <span> smart sunhan </span>
 </br>
-<span id="chat_content"></span>
 
-<div style="width: 100%">
-  <input id="chat_input" type="text">
-  <button onclick="onChatSend()">send</button>
-  <button onclick="initChat()">init</button>
-</div>
+<input id="user_id" type="text" style="width: 100px; font-size: 20px">
+<button onclick="signIn()">set id</button>
 
-
-<table>
-  <tr>
-    <th>price</th>
-    <th>amount</th>
-    <th>coefficient</th>
-    <th>result</th>
-  </tr>
-  <tbody id="products"></tbody>
-</table>
-
-</body>
 
 <script>
 
-  let productData = [{'id':1}, {'id':2}, {'id':3}, {'id':4}, {'id':5}];
-  let chatContent = "";
-
   $( document ).ready(function() {
-    $("#productsTmpl").tmpl(productData).appendTo("#products");
-    $(".changeable").on("change paste keyup", function() {
-      onChangeInput();
-    });
-    getChat();
+    let userId = getCookie('userId');
+    if(userId) {
+      $("#user_id").val(userId);
+    }
   });
 
-  function onChangeInput() {
-    for (let idx=0; idx < productData.length; idx++) {
-      let result = $("#price_" + idx).val() / $("#amount_"  + idx).val() * $("#coefficient_"  + idx).val();
-      $("#result_"  + idx).val(result);
-    }
+  function signIn() {
+    setCookie('userId', $("#user_id").val(), 3);
+    document.location = "/chat";
   }
-
-  function onChatSend() {
-    let param = $("#chat_input").val() + "<br/>";
-
-    $.post("/chat", param, function(data) {
-      $("#chat_content").html(decodeURIComponent(data));
-    });
-    $("#chat_input").val('');
-  }
-
-  function getChat() {
-    $.get("/chat", null, function(data) {
-      $("#chat_content").html(decodeURIComponent(data));
-    });
-  }
-
-  function initChat() {
-    $.post("/chat/init", null, function() {
-      $("#chat_content").html('');
-    });
-  }
-
 </script>
 
-<script id="productsTmpl" type="text/x-jquery-tmpl">
-  <tr>
-    <td>
-      <input id="price_${id}" class="changeable" type="number" style="width: 50px; font-size: 20px">
-    </td>
-    <td>
-      <input id="amount_${id}" class="changeable" type="number" style="width: 50px; font-size: 20px">
-    </td>
-    <td>
-      <select id="coefficient_${id}" class="changeable" style="font-size: 20px">
-        <option value="0.8">80%</option>
-        <option value="0.9">90%</option>
-        <option value="1.0" selected>100%</option>
-        <option value="1.1">110%</option>
-        <option value="1.2">120%</option>
-      </select>
-    </td>
-    <td>
-      <input id="result_${id}" type="number" style="width: 50px; font-size: 20px" readonly>
-    </td>
-  </tr>
+<script>
+  function setCookie(cName, cValue, cDay) {
+    let expire = new Date();
+    expire.setDate(expire.getDate() + cDay);
+    let cookies = cName + '=' + cValue + '; path=/ ';
+    if(cDay) cookies += ';expires=' + expire.toGMTString() + ';';
+    document.cookie = cookies;
+  }
+
+  var getCookie = function(name) {
+    var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+    return value? value[2] : null;
+  };
 </script>

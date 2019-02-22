@@ -1,43 +1,78 @@
 from flask import Flask, render_template, request
+from flask.json import jsonify
+
 app = Flask(__name__)
 
-class chat():
+class Chat():
   def __init__(self):
-    self.chatContent = ""
+    self.chatContents = list()
 
   def addContent(self, content):
-    self.chatContent += content
+    self.chatContents.append(content)
 
-  def getContent(self):
-    return self.chatContent
+  def getContents(self):
+    return self.chatContents
 
-  def initContent(self):
-    self.chatContent = ""
+  def initContents(self):
+    self.chatContents.clear()
 
-c = chat()
+  def serialize(self):
+    return {
+      'chatContents': [
+        content.serialize() for content in self.chatContents
+      ]
+    }
 
-@app.route('/hello/<name>')
-def hello_world(name):
-  return 'Hello World! %s' % name
+class Content():
+  def __init__(self, message, author):
+    self.message = message
+    self.author = author
+    self.readerIds = list()
+
+  def serialize(self):
+    return {
+      'message': self.message,
+      'author': self.author,
+      'readerIds': [
+        readerId for readerId in self.readerIds
+      ]
+    }
+
+c = Chat()
 
 @app.route('/hello')
-def hello_world_template():
+def hello_template():
   return render_template('hello.html')
 
-@app.route('/hello/pull')
-def hello_world_pull():
-  return 'pull'
+@app.route('/chat')
+def chat_template():
+  return render_template('chat.html')
 
-@app.route('/chat', methods=['GET'])
+@app.route('/calc')
+def calc_template():
+  return render_template('calc.html')
+
+
+
+
+@app.route('/chat/message', methods=['GET'])
 def getChat():
-  return c.getContent()
+  userId = request.cookies.get("userId")
+  for content in c.getContents():
+    if userId not in content.readerIds:
+      content.readerIds.append(userId)
+  return jsonify(c.serialize())
 
-@app.route('/chat', methods=['POST'])
+@app.route('/chat/message', methods=['POST'])
 def addChat():
-  c.addContent(request.get_data().decode('UTF-8'))
-  return c.getContent()
 
-@app.route('/chat/init', methods=['POST'])
+  uesrId = request.cookies.get("userId")
+  message = request.get_data().decode('UTF-8')
+  content = Content(message, uesrId)
+  c.addContent(content)
+  return 'ok'
+
+@app.route('/chat/message/init', methods=['POST'])
 def initChat():
   c.initContent()
   return 'ok'

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+<script type="text/javascript" src="/static/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/jquery.tmpl.min.js"></script>
+
+
+<span> smart sunhan </span>
+</br>
+<span id="chat_content"></span>
+
+<div style="width: 100%">
+  <input id="chat_input" type="text">
+  <button onclick="addChat()">send</button>
+  <button onclick="initChat()">init</button>
+</div>
+
+<script>
+
+  $( document ).ready(function() {
+    getChat();
+  });
+
+  function addChat() {
+    let param = $("#chat_input").val();
+    $("#chat_input").val('');
+
+    $.post("/chat/message", param, function(data) {
+      getChat();
+    });
+  }
+
+  function getChat() {
+    $.get("/chat/message", null, function(data) {
+      $("#chat_content").html('');
+      $("#chatTmpl").tmpl(data.chatContents).appendTo("#chat_content");
+    });
+  }
+
+  function initChat() {
+    $.post("/chat/message/init", null, function() {
+      getChat();
+    });
+  }
+</script>
+
+
+<script id="chatTmpl" type="text/x-jquery-tmpl">
+  ${author} : ${message} [${readerIds}] <br>
+</script>
