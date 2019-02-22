@@ -48,12 +48,12 @@
   }
 
   function onChatSend() {
-    let param = {
-      'content': $("#chat_input").val() + "<br/>"
-    }
+    let param = $("#chat_input").val() + "<br/>";
+
     $.post("/chat", param, function(data) {
       $("#chat_content").html(decodeURIComponent(data));
     });
+    $("#chat_input").val('');
   }
 
   function getChat() {
