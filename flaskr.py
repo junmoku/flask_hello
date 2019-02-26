@@ -14,7 +14,7 @@ class Chat():
     return self.chatContents
 
   def initContents(self):
-    self.chatContents = list()
+    self.chatContents.clear()
 
   def serialize(self):
     return {
@@ -74,7 +74,7 @@ def addChat():
 
 @app.route('/chat/message/init', methods=['POST'])
 def initChat():
-  c.initContent()
+  c.initContents()
   return 'ok'
 
 if __name__ == '__main__':
