@@ -14,7 +14,7 @@ class Chat():
     return self.chatContents
 
   def initContents(self):
-    self.chatContents.clear()
+    self.chatContents = list()
 
   def serialize(self):
     return {
